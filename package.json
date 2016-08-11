@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/open-node/func-delegate/issues"
   },
-  "homepage": "https://github.com/open-node/func-delegate#readme"
+  "homepage": "https://github.com/open-node/func-delegate#readme",
+  "dependencies": {
+    "validator": "^5.5.0"
+  }
 }

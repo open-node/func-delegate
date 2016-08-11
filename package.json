@@ -1,0 +1,26 @@
+{
+  "name": "func-delegate",
+  "version": "0.1.0",
+  "description": "function arguments validate and call chainning",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/open-node/func-delegate.git"
+  },
+  "keywords": [
+    "function",
+    "delegate",
+    "arguments",
+    "validate",
+    "chainning"
+  ],
+  "author": "Redstone Zhao",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/open-node/func-delegate/issues"
+  },
+  "homepage": "https://github.com/open-node/func-delegate#readme"
+}

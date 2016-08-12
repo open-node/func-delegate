@@ -66,14 +66,19 @@ var delegate = function(fn, schemas) {
 
   func.exec = function() {
     var result;
-    _.each(schemas, function(schema, index) {
-      if (schema.hasOwnProperty('defaultValue')) {
-        if (args[index] == null) args[index] = schema.defaultValue;
-      }
-      validate(schema, schema.name, args[index]);
-    });
-    result = fn.apply(null, args);
-    args = [];
+    try {
+      _.each(schemas, function(schema, index) {
+        if (schema.hasOwnProperty('defaultValue')) {
+          if (args[index] == null) args[index] = schema.defaultValue;
+        }
+        validate(schema, schema.name, args[index]);
+      });
+      result = fn.apply(null, args);
+    } catch(e) {
+      throw e;
+    } finally {
+      args = [];
+    }
     return result;
   };
 

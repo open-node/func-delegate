@@ -30,7 +30,9 @@ var validate = function(schema, name, value) {
     } else {
       pass = validator[key](value, val);
     }
-    if (!pass) throw Error(schema.message || '`' + name + '` validate failure: ' + key);
+    if (!pass) {
+      throw Error(schema.message || '`' + name + '` validate failure: ' + key);
+    }
   });
 
   // iterator check
@@ -54,13 +56,18 @@ var delegate = function(fn, schemas) {
   };
 
   var func = function() {
-    args = [].slice.call(arguments, 0);
+    [].slice.call(arguments, 0).forEach(function(x, i) {
+      if (x != null) args[i] = x;
+    });
     return func.exec();
   };
 
   _.each(schemas, function(schema, index) {
-    if (func[schema.name]) throw Error("Function " + schema.name + " already exists!");
-    func[schema.name] = getArgument(index)
+    if (func.hasOwnProperty(schema.name)) throw Error("Function " + schema.name + " already exists!");
+    func[schema.name] = getArgument(index);
+    if (schema.hasOwnProperty('defaultValue')) {
+      args[index] = schema.defaultValue;
+    }
   });
 
   func.exec = function() {

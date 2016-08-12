@@ -109,7 +109,7 @@ describe("func-delegate", function() {
       };
     };
     person = delegate(person, [{
-      name: 'name',
+      name: 'Name',
       type: String,
       validate: {
         matches: /^赵/,
@@ -134,12 +134,15 @@ describe("func-delegate", function() {
       },
       message: "Age must be a number, max value is 200, default is 18"
     }]);
-    it("Basics usage", function(done) {
+    it("Type assert", function(done) {
       assert.ok(person instanceof Function, '处理后的仍然是一个函数');
-      assert.ok(person.name instanceof Function);
-      assert.ok(person.email instanceof Function);
-      assert.ok(person.age instanceof Function);
+      assert.ok(person.Name instanceof Function, 'Name');
+      assert.ok(person.email instanceof Function, 'email');
+      assert.ok(person.age instanceof Function, 'age');
+      done()
+    });
 
+    it("exec assert", function(done) {
       assert.deepEqual({
         email: '13740080@qq.com',
         name: '赵雄飞',
@@ -149,13 +152,16 @@ describe("func-delegate", function() {
         email: '13740080@qq.com',
         name: '赵雄飞',
         age: 18
-      }, person.name('赵雄飞').email('13740080@qq.com').exec());
+      }, person.Name('赵雄飞').email('13740080@qq.com').exec());
       assert.deepEqual({
         email: '13740080@qq.com',
         name: '赵雄飞',
         age: 36
-      }, person.name('赵雄飞').email('13740080@qq.com').age(36).exec());
+      }, person.Name('赵雄飞').email('13740080@qq.com').age(36).exec());
+      done()
+    });
 
+    it("Exception assert", function(done) {
       assert.throws(function() {
         person('王方', '223251686@qq.com')
       }, function(err) {
@@ -163,16 +169,15 @@ describe("func-delegate", function() {
       });
 
       assert.throws(function() {
-        add.name('王方').email('223251686@qq.com').exec();
+        person.Name('王方').email('223251686@qq.com').exec();
       }, function(err) {
         return (err instanceof Error) && err.message === 'Name must be a string, start with `赵`, lenght gt 1 and lt 4'
       })
 
       assert.throws(function() {
-        add.name('赵星梦').email('223251686').exec();
+        person.Name('赵星梦').email('223251686').exec();
       }, function(err) {
-        console.log(err);
-        return (err instanceof Error) && err.message === 'Name must be a string, start with `赵`, lenght gt 1 and lt 4'
+        return (err instanceof Error) && err.message === '`email` validate failure: isEmail'
       })
 
       done();

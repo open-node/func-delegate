@@ -26,5 +26,8 @@
   "dependencies": {
     "underscore": "^1.8.3",
     "validator": "^5.5.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.0.2"
   }
 }

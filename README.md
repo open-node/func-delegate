@@ -1,6 +1,9 @@
-var delegate  = require('../')
-  , assert    = require('assert');
+# func-deleglate
 
+## Usage
+<pre>npm install func-deleglate --save</pre>
+
+```js
 describe("func-delegate", function() {
   describe("#normal-only-type", function() {
     var add = function(a, b) { return a + b; };
@@ -307,3 +310,4 @@ describe("func-delegate", function() {
     });
   });
 });
+```

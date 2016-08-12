@@ -18,9 +18,19 @@ var validate = function(schema, name, value) {
 
   // validate check
   schema.validate && _.each(schema.validate, function(val, key) {
-    if (_.isFunction(val)) return val(value);
-    if (!validator[key]) throw Error('`' + name + '` found non-exists validate rule: ' + key);
-    validator[key](value, val);
+    var pass = false;
+    if (_.isFunction(val)) {
+      pass = val(value);
+    } else if (!validator[key]) {
+      throw Error('`' + name + '` found non-exists validate rule: ' + key);
+    } else if (val === false) {
+      pass = !validator[key](value);
+    } else if (val === true) {
+      pass = validator[key](value);
+    } else {
+      pass = validator[key](value, val);
+    }
+    if (!pass) throw Error(schema.message || '`' + name + '` validate failure: ' + key);
   });
 
   // iterator check

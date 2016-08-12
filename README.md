@@ -1,7 +1,13 @@
 # func-deleglate
 
+Function arguments validate and call chainning
+
+[![Build status](https://api.travis-ci.org/open-node/func-delegate.svg?branch=master)](https://travis-ci.org/open-node/func-delegate)
+
 ## Usage
-<pre>npm install func-deleglate --save</pre>
+```bash
+npm install func-deleglate --save
+```
 
 ```js
 describe("func-delegate", function() {

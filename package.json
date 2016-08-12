@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/open-node/func-delegate#readme",
   "dependencies": {
+    "underscore": "^1.8.3",
     "validator": "^5.5.0"
   }
 }

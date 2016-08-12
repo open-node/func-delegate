@@ -3,5 +3,7 @@ node_modules
 *.sublime*
 psd
 thumb
+test
+test/*
 *.log
 

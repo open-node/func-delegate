@@ -1,6 +1,6 @@
 {
   "name": "func-delegate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "function arguments validate and call chainning",
   "main": "index.js",
   "scripts": {

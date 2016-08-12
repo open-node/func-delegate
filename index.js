@@ -20,15 +20,13 @@ var validate = function(schema, name, value) {
   schema.validate && _.each(schema.validate, function(val, key) {
     var pass = false;
     if (_.isFunction(val)) {
-      pass = val(value);
-    } else if (!validator[key]) {
-      throw Error('`' + name + '` found non-exists validate rule: ' + key);
+      pass = val(value, schema);
     } else if (val === false) {
-      pass = !validator[key](value);
+      pass = !validator[key]('' + value);
     } else if (val === true) {
-      pass = validator[key](value);
+      pass = validator[key]('' + value);
     } else {
-      pass = validator[key](value, val);
+      pass = validator[key]('' + value, val);
     }
     if (!pass) {
       throw Error(schema.message || '`' + name + '` validate failure: ' + key);
@@ -36,7 +34,6 @@ var validate = function(schema, name, value) {
   });
 
   // iterator check
-  if (schema.type !== Array && schema.iterator) throw Error('`iterator` enabled when `Type` must be `Array`');
   if (schema.iterator) {
     _.each(value, function(v, i) {
       _.each(schema.iterator, function(val, key) {
@@ -50,7 +47,7 @@ var delegate = function(fn, schemas) {
   var args = [];
   var getArgument = function(index) {
     return function(value) {
-      args[index] = value;
+      if (value != null) args[index] = value;
       return func;
     };
   };
@@ -89,6 +86,15 @@ module.exports = delegate(delegate, [{
   name: 'schemas',
   type: Array,
   allowNull: false,
+  validate: {
+    iteratorCheck: function(schemas) {
+      _.each(schemas, function(schema, index) {
+        if (schema.type === Array || !schema.iterator) return;
+        throw Error('`iterator` enabled when `Type` must be `Array` schemas[' + index + ']');
+      });
+      return true;
+    }
+  },
   iterator: {
     name: {
       type: String,
@@ -104,7 +110,22 @@ module.exports = delegate(delegate, [{
       message: 'The `type` must be a Type Function, eg. Array, Object, String...'
     },
     allowNull: Boolean,
-    validate: Object,
+    validate: {
+      type: Object,
+      allowNull: true,
+      validate: {
+        exists: function(obj) {
+          var k, v;
+          for (k in obj) {
+            v = obj[k];
+            if (!_.isFunction(v) && !_.isFunction(validator[k])) {
+              throw Error('Not found validate rule: ' + k);
+            }
+          };
+          return true;
+        }
+      }
+    },
     iterator: Object,
     message: String
   }

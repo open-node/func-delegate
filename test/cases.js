@@ -306,4 +306,109 @@ describe("func-delegate", function() {
       done();
     });
   });
+
+  describe("improve coverage", function() {
+    var fn = function(a, b) { a + b; };
+    var schemas = [{
+      name: 'num',
+      type: Number,
+      validate: {
+        hello: true
+      }
+    }, {
+      name: 'add',
+      type: Number
+    }];
+    it("validate[key] non-exists", function(done) {
+      assert.throws(function() {
+        fn = delegate(fn, schemas);
+      }, function(err) {
+        return (err instanceof Error) && err.message === 'Not found validate rule: hello'
+      }, 'validator[key] non-exists');
+      done();
+    });
+
+    it("validate rule value false", function(done) {
+      var f2 = function(a, b) { return {name: a, age: b}; }
+      f2 = delegate(f2, [{
+        name: 'Name',
+        type: String,
+        validate: {
+          isEmail: false
+        },
+        message: '名字不能是Email'
+      }, {
+        name: 'Age',
+        type: Number,
+        validate: {
+          isFloat: false,
+          min: 0,
+          max: 200
+        },
+        message: '年龄是自然数不能是浮点数'
+      }]);
+
+      assert.throws(function() {
+        f2.Name('13740080@qq.com').Age(30).exec();
+      }, function(err) {
+        return (err instanceof Error) && err.message === '名字不能是Email';
+      }, '名字不能是Email');
+
+      assert.throws(function() {
+        f2.Name('赵雄飞').Age(30.5).exec();
+      }, function(err) {
+        return (err instanceof Error) && err.message === '年龄是自然数不能是浮点数';
+      }, '年龄设置为浮点数');
+
+      assert.throws(function() {
+        f2.Name('赵雄飞').Age(-20).exec();
+      }, function(err) {
+        return (err instanceof Error) && err.message === '年龄是自然数不能是浮点数';
+      }, '年龄为负数');
+
+      done();
+    });
+
+    it("iterator when type not Array", function(done) {
+      var fn = function(a, b) { return a + b; };
+      var schemas = [{
+        name: 'basic',
+        type: Number,
+        iterator: {
+          name: String
+        }
+      }, {
+        name: 'add',
+        type: Number
+      }];
+      assert.throws(function() {
+        fn = delegate(fn, schemas);
+      }, function(err) {
+        return (err instanceof Error) && err.message == '`iterator` enabled when `Type` must be `Array` schemas[0]'
+      }, '非数组类型有 iterator');
+
+      done();
+    });
+
+    it("function arguments defaultValue", function(done) {
+      var fn = function(a, b) { return a + b; };
+      fn = delegate(fn, [{
+        name: 'basic',
+        type: Number
+      }, {
+        name: 'add',
+        type: Number,
+        allowNull: true,
+        defaultValue: 20
+      }]);
+
+      assert.equal(30, fn(10), '默认加20');
+      assert.equal(30, fn.basic(10).exec(), '默认加20, 链式调用');
+      assert.equal(30, fn.basic(10).add(null).exec(), '默认加20, 缺省null链式调用');
+      assert.equal(30, fn.basic(10).add(undefined).exec(), '默认加20, 缺省undefined链式调用');
+      assert.equal(30, fn.basic(10).add().exec(), '默认加20, 缺省未调用链式调用');
+
+      done();
+    });
+  });
 });

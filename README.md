@@ -3,7 +3,6 @@
 Function arguments validate and call chainning
 
 [![Build status](https://api.travis-ci.org/open-node/func-delegate.svg?branch=master)](https://travis-ci.org/open-node/func-delegate)
-
 [![codecov](https://codecov.io/gh/open-node/func-delegate/branch/master/graph/badge.svg)](https://codecov.io/gh/open-node/func-delegate)
 
 ## Usage

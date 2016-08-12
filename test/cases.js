@@ -403,10 +403,35 @@ describe("func-delegate", function() {
       }]);
 
       assert.equal(30, fn(10), '默认加20');
+      assert.equal(30, fn(10, null), '默认加20, 两个参数');
       assert.equal(30, fn.basic(10).exec(), '默认加20, 链式调用');
       assert.equal(30, fn.basic(10).add(null).exec(), '默认加20, 缺省null链式调用');
       assert.equal(30, fn.basic(10).add(undefined).exec(), '默认加20, 缺省undefined链式调用');
       assert.equal(30, fn.basic(10).add().exec(), '默认加20, 缺省未调用链式调用');
+
+      done();
+    });
+
+    it("argument name already exists function", function(done) {
+      var fn = function(name, age) {
+        return {
+          name: name,
+          age: age
+        };
+      };
+      var schemas = [{
+        name: 'name',
+        type: String
+      }, {
+        name: 'age',
+        type: Number
+      }];
+
+      assert.throws(function() {
+        fn = delegate(fn, schemas);
+      }, function(err) {
+        return (err instanceof Error) && err.message === 'Function name already exists!';
+      }, 'name exists on function property');
 
       done();
     });

@@ -6,4 +6,5 @@ thumb
 test
 test/*
 *.log
+coverage
 

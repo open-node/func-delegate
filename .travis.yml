@@ -5,3 +5,5 @@ node_js:
   - "6.2.2"
 before_script:
   - mocha
+after_success:
+  - codecov

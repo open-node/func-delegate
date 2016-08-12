@@ -436,4 +436,35 @@ describe("func-delegate", function() {
       done();
     });
   });
+
+  describe("special defaultValue", function() {
+    var fn = function(a, b) { return a + b; };
+    var schemas = [{
+      name: 'basic',
+      type: Number
+    }, {
+      name: 'add',
+      type: Number,
+      defaultValue: 50,
+      message: 'Argument `add` must be a `Number`'
+    }];
+    fn = delegate(fn, schemas);
+    it("no use defaultValue", function(done) {
+      assert.equal(50, fn.add(30).basic(20).exec());
+      done();
+    });
+    it("last args will be clear, defaultValue active", function(done) {
+      assert.equal(70, fn.basic(20).exec());
+      done();
+    });
+    it("set defaultValue validate", function(done) {
+      assert.throws(function() {
+        fn.basic(20).add('30').exec();
+      }, function(err) {
+        return (err instanceof Error) && err.message === 'Argument `add` must be a `Number`';
+      });
+
+      done();
+    });
+  });
 });

@@ -62,16 +62,19 @@ var delegate = function(fn, schemas) {
   _.each(schemas, function(schema, index) {
     if (func.hasOwnProperty(schema.name)) throw Error("Function " + schema.name + " already exists!");
     func[schema.name] = getArgument(index);
-    if (schema.hasOwnProperty('defaultValue')) {
-      args[index] = schema.defaultValue;
-    }
   });
 
   func.exec = function() {
+    var result;
     _.each(schemas, function(schema, index) {
+      if (schema.hasOwnProperty('defaultValue')) {
+        if (args[index] == null) args[index] = schema.defaultValue;
+      }
       validate(schema, schema.name, args[index]);
     });
-    return fn.apply(null, args);
+    result = fn.apply(null, args);
+    args = [];
+    return result;
   };
 
   return func;

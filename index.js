@@ -1,7 +1,7 @@
 var _         = require('underscore')
   , validator = require('./lib/validator');
 
-var validate = function(schema, name, value) {
+var validate = function(schema, name, value, args) {
   // simple usage schema is constructor
   if (schema instanceof Function) {
     schema = {
@@ -20,7 +20,7 @@ var validate = function(schema, name, value) {
   schema.validate && _.each(schema.validate, function(val, key) {
     var pass = false;
     if (_.isFunction(val)) {
-      pass = val(value, schema);
+      pass = val(value, schema, args);
     } else if (val === false) {
       pass = !validator[key]('' + value);
     } else if (val === true) {
@@ -71,7 +71,7 @@ var delegate = function(fn, schemas) {
         if (schema.hasOwnProperty('defaultValue')) {
           if (args[index] == null) args[index] = schema.defaultValue;
         }
-        validate(schema, schema.name, args[index]);
+        validate(schema, schema.name, args[index], args);
       });
       result = fn.apply(null, args);
     } catch(e) {

@@ -7,7 +7,7 @@ Function arguments validate and call chainning
 
 ## Usage
 ```bash
-npm install func-deleglate --save
+npm install func-delegate --save
 ```
 
 ```js

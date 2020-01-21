@@ -24,6 +24,31 @@ describe("func-delegate", function() {
       done();
     });
 
+    /* eslint class-methods-use-this: 0 */
+    class User {
+      static count() {
+        return 1;
+      }
+    }
+
+    let count = (Model) => {
+      const result = Model.count();
+      return result;
+    };
+
+    count = delegate(count, [{
+      name: 'Model',
+      type: User,
+    }]);
+
+    it('es6 class assert', (done) => {
+      const user = class extends User {};
+
+      assert.equal(1, count(user), 'es class');
+
+      done();
+    });
+
     it("Exception assert", function(done) {
       assert.throws(function() {
         add(1, '2');
@@ -42,6 +67,11 @@ describe("func-delegate", function() {
       }, function(err) {
         return (err instanceof Error) && err.message === 'Argument `num2` type must be `Number`';
       }, '链式调用 num2 是 string, 顺序无关')
+
+      assert.throws(() => {
+        count({});
+      }, err => (err instanceof Error));
+
       done();
     });
   });

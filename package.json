@@ -28,7 +28,7 @@
     "validator": "^5.5.0"
   },
   "devDependencies": {
-    "codecov": "^1.0.1",
+    "codecov": "^3.7.1",
     "istanbul": "^0.4.4",
     "mocha": "^3.0.2"
   }
